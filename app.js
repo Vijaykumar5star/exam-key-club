@@ -170,7 +170,13 @@ async function loadStats(){
   try {
     const { count } = await supa.from('enrollments').select('id', { count: 'exact', head: true }).eq('user_id', currentUser.id);
     document.getElementById('statCourses').textContent = count || 0;
-  } catch(e) { /* table may not exist yet */ }
+    const s = await supa.rpc('get_my_stats');
+    if (s.data){
+      document.getElementById('statTests').textContent = s.data.tests_done || 0;
+      document.getElementById('statScore').textContent = (s.data.avg_score != null) ? s.data.avg_score + '%' : '—';
+      document.getElementById('statRank').textContent = (s.data.my_rank != null) ? '#' + s.data.my_rank : '—';
+    }
+  } catch(e) { /* tables may not exist yet */ }
 }
 
 /* login guards */
@@ -380,3 +386,247 @@ setInterval(() => {
 /* ---------------- Boot ---------------- */
 applyI18n();
 initSupabase();
+
+/* =========================================================
+   TEST ENGINE + PAYMENTS (phase 2)
+   ========================================================= */
+const T2 = {
+  hi: {
+    tests_h: 'Mock Tests', no_tests: 'Abhi koi test publish nahi hua. Jald hi aa rahe hain!',
+    start: 'Start', mins: 'min', qs: 'Qs',
+    submit: 'Submit Test', confirm_submit: 'Test submit karein? Aap jawab badal nahi payenge.',
+    next_q: 'Next', prev_q: 'Prev', palette: 'Question Palette',
+    time_left: 'Time', auto_sub: 'Samay khatam — test auto-submit ho gaya.',
+    result_h: 'Test Result', correct: 'Sahi', wrong: 'Galat', skipped: 'Chhode',
+    review: 'Halo — Review', back_home: 'Home par wapas',
+    pay_h: 'Course Purchase', pay_amount: 'Amount', pay_steps: 'Payment kaise karein:',
+    s1: '1. Neeche QR scan karein ya UPI ID par payment bhejein', s2: '2. Payment ke baad UPI transaction/UTR ID copy karein',
+    s3: '3. Wahi ID neeche daal kar submit karein — admin verify karke access dega',
+    txn_ph: 'UPI Transaction / UTR ID', pay_submit: 'Payment Submit karein',
+    pay_ok: 'Payment submit ho gaya! Verify hone ke baad course access mil jayega.',
+    pay_err: 'Transaction ID daalna zaroori hai.', upi_missing: 'UPI ID admin panel mein set nahi hui hai.',
+    login_first: 'Pehle login karein.', q: 'प्रश्न', your_ans: 'Aapka jawab', right_ans: 'Sahi jawab'
+  },
+  en: {
+    tests_h: 'Mock Tests', no_tests: 'No tests published yet. Coming soon!',
+    start: 'Start', mins: 'min', qs: 'Qs',
+    submit: 'Submit Test', confirm_submit: 'Submit the test? You cannot change answers after this.',
+    next_q: 'Next', prev_q: 'Prev', palette: 'Question Palette',
+    time_left: 'Time', auto_sub: 'Time is up — the test was auto-submitted.',
+    result_h: 'Test Result', correct: 'Correct', wrong: 'Wrong', skipped: 'Skipped',
+    review: 'Review', back_home: 'Back to Home',
+    pay_h: 'Course Purchase', pay_amount: 'Amount', pay_steps: 'How to pay:',
+    s1: '1. Scan the QR below or pay to the UPI ID shown', s2: '2. After paying, copy the UPI transaction/UTR ID',
+    s3: '3. Enter that ID below and submit — the admin will verify and grant access',
+    txn_ph: 'UPI Transaction / UTR ID', pay_submit: 'Submit Payment',
+    pay_ok: 'Payment submitted! You will get course access once verified.',
+    pay_err: 'Transaction ID is required.', upi_missing: 'UPI ID is not set in the admin panel.',
+    login_first: 'Please log in first.', q: 'Question', your_ans: 'Your answer', right_ans: 'Correct answer'
+  }
+};
+function tt(k){ return (T2[lang] && T2[lang][k]) || T2.en[k] || k; }
+
+/* ---------------- Tests list ---------------- */
+async function openTestsModal(){
+  if (!currentUser){ openModal('login'); return; }
+  currentModal = 'tests';
+  modal.innerHTML = head(tt('tests_h')) + '<div class="notice">Loading…</div>';
+  modalBack.classList.add('show');
+  const { data: tests, error } = await supa.from('tests')
+    .select('id,title,description,category,duration_minutes')
+    .eq('published', true).order('id');
+  let rows = '';
+  if (!error && tests && tests.length){
+    rows = tests.map(ts => `
+      <div class="testRow" onclick="startTest(${ts.id})">
+        <div><b>${ts.title}</b><small>${ts.category || ''} • ${ts.duration_minutes} ${tt('mins')}</small></div>
+        <span class="testGo">${tt('start')} →</span>
+      </div>`).join('');
+  } else {
+    rows = `<div class="notice">${tt('no_tests')}</div>`;
+  }
+  modal.innerHTML = head(tt('tests_h')) + rows;
+}
+
+/* ---------------- Test player ---------------- */
+let TEST = null;
+
+async function startTest(testId){
+  const { data: test } = await supa.from('tests').select('*').eq('id', testId).single();
+  const { data: questions } = await supa.from('test_questions').select('*')
+    .eq('test_id', testId).order('sort_order').order('id');
+  if (!test || !questions || !questions.length) return;
+  TEST = {
+    test, questions,
+    answers: Array(questions.length).fill(null),
+    idx: 0,
+    endsAt: Date.now() + test.duration_minutes * 60000,
+    submitted: false
+  };
+  closeModal();
+  renderPlayer();
+  TEST.timer = setInterval(tickTimer, 1000);
+}
+
+function tickTimer(){
+  if (!TEST || TEST.submitted) return;
+  const left = TEST.endsAt - Date.now();
+  const el = document.getElementById('pTimer');
+  if (left <= 0){
+    el.textContent = '00:00';
+    finishTest(true);
+    return;
+  }
+  const m = String(Math.floor(left / 60000)).padStart(2, '0');
+  const s = String(Math.floor((left % 60000) / 1000)).padStart(2, '0');
+  el.textContent = m + ':' + s;
+  el.className = 'pTimer' + (left < 60000 ? ' low' : '');
+}
+
+function renderPlayer(){
+  const q = TEST.questions[TEST.idx];
+  const opts = ['A', 'B', 'C', 'D'].map(L => `
+    <div class="opt ${TEST.answers[TEST.idx] === L ? 'sel' : ''}" onclick="pickAns('${L}')">
+      <span class="key">${L}</span><span>${q['option_' + L.toLowerCase()]}</span>
+    </div>`).join('');
+  const chips = TEST.questions.map((_, i) =>
+    `<div class="palChip ${TEST.answers[i] ? 'ans' : ''} ${i === TEST.idx ? 'cur' : ''}" onclick="goQ(${i})">${i + 1}</div>`).join('');
+  document.getElementById('playerBack').innerHTML = `
+    <div class="pTop">
+      <button class="close" style="background:rgba(255,255,255,.15);color:#fff" onclick="if(confirm('Test chhod dein?')){closePlayer()}">×</button>
+      <b>${TEST.test.title}</b>
+      <span class="pTimer" id="pTimer">--:--</span>
+    </div>
+    <div class="pBody">
+      <div class="qNum">${tt('q')} ${TEST.idx + 1} / ${TEST.questions.length}</div>
+      <div class="qText">${q.question}</div>
+      ${opts}
+      <div class="palWrap" id="palWrap">
+        <div class="qNum">${tt('palette')}</div>
+        <div class="pal">${chips}</div>
+      </div>
+    </div>
+    <div class="pFoot">
+      <button style="background:#f1f5ff;color:#54637c" onclick="prevQ()" ${TEST.idx === 0 ? 'disabled' : ''}>← ${tt('prev_q')}</button>
+      <button style="background:#eef4ff;color:var(--blue)" onclick="togglePal()">${tt('palette')}</button>
+      ${TEST.idx === TEST.questions.length - 1
+        ? `<button style="background:var(--blue);color:#fff" onclick="finishTest(false)">${tt('submit')} ✓</button>`
+        : `<button style="background:var(--blue);color:#fff" onclick="nextQ()">${tt('next_q')} →</button>`}
+    </div>`;
+  tickTimer();
+}
+
+function pickAns(L){
+  TEST.answers[TEST.idx] = L;
+  renderPlayer();
+}
+function goQ(i){ TEST.idx = i; renderPlayer(); }
+function nextQ(){ if (TEST.idx < TEST.questions.length - 1){ TEST.idx++; renderPlayer(); } }
+function prevQ(){ if (TEST.idx > 0){ TEST.idx--; renderPlayer(); } }
+function togglePal(){ document.getElementById('palWrap').classList.toggle('show'); }
+
+function closePlayer(){
+  if (TEST && TEST.timer) clearInterval(TEST.timer);
+  TEST = null;
+  document.getElementById('playerBack').classList.remove('show');
+  document.getElementById('playerBack').innerHTML = '';
+}
+
+async function finishTest(auto){
+  if (!TEST || TEST.submitted) return;
+  if (!auto && !confirm(tt('confirm_submit'))) return;
+  TEST.submitted = true;
+  clearInterval(TEST.timer);
+  let score = 0;
+  const details = TEST.questions.map((q, i) => {
+    const ok = TEST.answers[i] === q.correct_answer;
+    if (ok) score++;
+    return { q: q.question, given: TEST.answers[i], correct: q.correct_answer, explanation: q.explanation };
+  });
+  const { error } = await supa.from('test_results').insert({
+    user_id: currentUser.id,
+    test_id: TEST.test.id,
+    score, total_questions: TEST.questions.length,
+    details, submitted_at: new Date().toISOString()
+  });
+  const total = TEST.questions.length;
+  const pct = Math.round(score / total * 100);
+  const wrongCount = TEST.answers.filter((a, i) => a && a !== TEST.questions[i].correct_answer).length;
+  const skippedCount = TEST.answers.filter(a => !a).length;
+  const test = TEST.test;
+  document.getElementById('playerBack').innerHTML = `
+    <div class="pTop"><b>${test.title}</b><span class="pTimer">${pct}%</span></div>
+    <div class="pBody">
+      ${auto ? `<div class="msg err" style="display:block">${tt('auto_sub')}</div>` : ''}
+      <div class="rBig">${score} / ${total}</div>
+      <div class="rGrid">
+        <div class="rCell"><strong>${score}</strong><span>${tt('correct')} ✓</span></div>
+        <div class="rCell"><strong>${wrongCount}</strong><span>${tt('wrong')} ✗</span></div>
+        <div class="rCell"><strong>${skippedCount}</strong><span>${tt('skipped')} –</span></div>
+      </div>
+      <h3>${tt('review')}</h3>
+      ${details.map((d, i) => `
+        <div class="revQ">
+          <div class="qNum">${tt('q')} ${i + 1}</div>
+          <div style="font-weight:700;margin:4px 0">${d.q}</div>
+          <div>${tt('your_ans')}: <span class="${d.given === d.correct ? 'okA' : 'badA'}">${d.given || '—'}</span></div>
+          <div>${tt('right_ans')}: <span class="okA">${d.correct}</span></div>
+          ${d.explanation ? `<div style="font-size:13px;color:#6d7482;margin-top:6px">💡 ${d.explanation}</div>` : ''}
+        </div>`).join('')}
+      <button class="wideBtn" onclick="closePlayer();loadStats()">${tt('back_home')}</button>
+    </div>`;
+  if (error) console.warn('result save failed', error);
+  loadStats();
+}
+
+/* ---------------- Payments (UPI + admin approval) ---------------- */
+let UPI_ID = null;
+
+async function loadSettings(){
+  try {
+    const { data } = await supa.from('app_settings').select('value').eq('key', 'upi_id').maybeSingle();
+    if (data && data.value) UPI_ID = data.value;
+  } catch(e) {}
+}
+
+function openBuy(courseId, courseTitle, price){
+  if (!currentUser){ openModal('login'); return; }
+  currentModal = 'buy';
+  const qr = UPI_ID
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent('upi://pay?pa=' + UPI_ID + '&pn=Exam Key Club&am=' + price + '&cu=INR')}`
+    : '';
+  modal.innerHTML = `${head(tt('pay_h'))}
+    <div class="profileRow"><div class="avatar">📘</div><div><b>${courseTitle}</b><br><small>Exam Key Club</small></div>
+      <span class="price" style="margin-left:auto;font-size:22px">₹${price}</span></div>
+    ${UPI_ID
+      ? `<p><b>${tt('pay_steps')}</b></p>
+         <p style="font-size:14px">${tt('s1')}<br>${tt('s2')}<br>${tt('s3')}</p>
+         <div class="upiBox">
+           <div style="font-weight:900;color:var(--blue);font-size:16px;word-break:break-all">${UPI_ID}</div>
+           ${qr ? `<img src="${qr}" alt="UPI QR" width="170" height="170">` : ''}
+         </div>
+         <div class="field"><label>${tt('txn_ph')}</label><input id="txnInput" placeholder="e.g. 4123XXXXXX12345"></div>
+         <button class="wideBtn" onclick="submitPayment(${courseId}, ${price})">${tt('pay_submit')}</button>`
+      : `<div class="notice">${tt('upi_missing')}</div>`}
+    ${msgBox()}`;
+  modalBack.classList.add('show');
+}
+
+async function submitPayment(courseId, price){
+  const txn = document.getElementById('txnInput').value.trim();
+  if (!txn){ showMsg('loginMsg', tt('pay_err'), 'err'); return; }
+  setBusy(undefined, false);
+  const { error } = await supa.from('payments').insert({
+    user_id: currentUser.id,
+    course_id: courseId,
+    amount: price,
+    payment_id: txn,
+    status: 'pending'
+  });
+  if (error){ showMsg('loginMsg', error.message, 'err'); return; }
+  showMsg('loginMsg', tt('pay_ok'), 'ok');
+  setTimeout(closeModal, 1800);
+}
+
+/* load settings on boot */
+loadSettings();
