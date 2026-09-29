@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#123f98">
 <meta name="description" content="Exam Key Club - Teacher Recruitment, TET Courses, Test Series and Study Material">
 <title>Exam Key Club</title>
@@ -29,10 +29,12 @@ button{cursor:pointer;border:0}
 .search input{width:100%;padding:13px 46px 13px 18px;border:1px solid var(--border);border-radius:15px;outline:none;background:#f7f9fd}
 .search input:focus{border-color:#91ace0;background:#fff}
 .search span{position:absolute;right:15px;top:10px;font-size:22px;color:#5f6c83}
-.top-actions{margin-left:auto;display:flex;gap:10px}
+.top-actions{margin-left:auto;display:flex;gap:10px;align-items:center}
 .iconBtn{width:42px;height:42px;border-radius:13px;background:#f1f5ff;color:var(--blue);font-size:20px;position:relative}
 .badge{position:absolute;right:-3px;top:-4px;background:#e53935;color:#fff;border-radius:10px;font-size:10px;min-width:18px;height:18px;display:grid;place-items:center;font-weight:800}
 .avatar{width:42px;height:42px;border-radius:50%;background:#dfeaff;color:var(--blue);display:grid;place-items:center;font-weight:800}
+.langBtn{height:42px;padding:0 14px;border-radius:13px;background:#f1f5ff;color:var(--blue);font-weight:800;font-size:13px}
+.loginBtn{height:42px;padding:0 20px;border-radius:13px;background:var(--blue);color:#fff;font-weight:800;font-size:14px}
 
 .hero{margin:20px 22px 12px;border-radius:25px;overflow:hidden;position:relative;min-height:230px;
   background:linear-gradient(120deg,#0e438f,#1182d5);color:#fff;padding:30px}
@@ -86,15 +88,32 @@ button{cursor:pointer;border:0}
 
 .modalBack{position:fixed;inset:0;background:rgba(10,22,45,.5);z-index:80;display:none;align-items:flex-end;justify-content:center}
 .modalBack.show{display:flex}
-.modal{width:min(560px,100%);background:#fff;border-radius:25px 25px 0 0;padding:22px;animation:up .2s ease}
+.modal{width:min(560px,100%);background:#fff;border-radius:25px 25px 0 0;padding:22px;animation:up .2s ease;max-height:86vh;overflow:auto}
 @keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
 .modal h3{margin-top:0}
 .close{float:right;background:#eef2fa;width:34px;height:34px;border-radius:10px}
 .notice{padding:13px;border-radius:13px;background:#f5f8ff;margin:10px 0}
 .profileRow{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--border)}
 
+.field{margin:12px 0}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:#3c4657}
+.field input{width:100%;padding:13px 15px;border:1px solid var(--border);border-radius:13px;outline:none;background:#f7f9fd}
+.field input:focus{border-color:#91ace0;background:#fff}
+.wideBtn{width:100%;padding:14px;border-radius:13px;background:var(--blue);color:#fff;font-weight:800;font-size:15px;margin-top:8px}
+.ghostBtn{width:100%;padding:12px;border-radius:13px;background:#f1f5ff;color:var(--blue);font-weight:800;margin-top:8px}
+.tabs{display:flex;gap:8px;margin:6px 0 10px}
+.tab{flex:1;padding:11px;border-radius:12px;background:#f1f5ff;color:#54637c;font-weight:800;font-size:13px}
+.tab.on{background:var(--blue);color:#fff}
+.msg{display:none;padding:12px 14px;border-radius:12px;font-size:14px;margin:10px 0}
+.msg.err{display:block;background:#fdecec;color:#b42318}
+.msg.ok{display:block;background:#e8f8ef;color:#157347}
+.otpRow{display:flex;gap:8px;justify-content:center;margin:14px 0}
+.otpRow input{width:46px;height:52px;text-align:center;font-size:22px;font-weight:800;border:1px solid var(--border);border-radius:12px;background:#f7f9fd}
+.otpRow input:focus{border-color:var(--blue);background:#fff;outline:none}
+.smallLink{background:none;color:var(--blue);font-weight:700;font-size:13px;padding:4px}
+
 @media(max-width:800px){
-  .topbar{padding:9px 14px;height:64px}.logoText{display:none}.logoMark{width:40px;height:40px}
+  .topbar{padding:9px 14px;height:64px;gap:10px}.logoText{display:none}.logoMark{width:40px;height:40px}
   .search{max-width:none}.search input{padding:11px 40px 11px 13px}.top-actions .hideMob{display:none}
   .hero{margin:14px 14px 8px;min-height:245px;padding:24px 20px}.hero h1{font-size:28px}
   .hero .deal{display:none}
@@ -110,96 +129,97 @@ button{cursor:pointer;border:0}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app" id="top">
 <header class="topbar">
   <div class="logo"><div class="logoMark">EK</div><span class="logoText">Exam Key Club</span></div>
-  <div class="search"><input id="search" placeholder="Search courses, tests, PDFs..." oninput="filterCourses()"><span>⌕</span></div>
+  <div class="search"><input id="search" data-i18n-ph="search_ph" placeholder="Search courses, tests, PDFs..." oninput="filterCourses()"><span>⌕</span></div>
   <div class="top-actions">
+    <button class="langBtn" id="langBtn" onclick="toggleLang()">English</button>
     <button class="iconBtn hideMob" onclick="openModal('qr')">▦</button>
-    <button class="iconBtn" onclick="openModal('notify')">🔔<i class="badge">5</i></button>
-    <button class="avatar" onclick="openModal('profile')">VK</button>
+    <button class="iconBtn" onclick="openModal('notify')">🔔<i class="badge">3</i></button>
+    <span id="authArea"></span>
   </div>
 </header>
 
 <section class="hero">
-  <h1>Teacher Recruitment की तैयारी, एक ही जगह.</h1>
-  <p>CGTET, CTET, शिक्षक भर्ती, Test Series, PDF Notes और structured courses के साथ अपनी तैयारी को व्यवस्थित करें।</p>
+  <h1 data-i18n="hero_title">Teacher Recruitment की तैयारी, एक ही जगह.</h1>
+  <p data-i18n="hero_sub">CGTET, CTET, शिक्षक भर्ती, Test Series, PDF Notes और structured courses के साथ अपनी तैयारी को व्यवस्थित करें।</p>
   <div class="heroBtns">
-    <button class="primary" onclick="scrollToId('courses')">Courses देखें</button>
-    <button class="secondary" onclick="openModal('test')">Free Mock Test</button>
+    <button class="primary" onclick="requireLoginOr('courses')" data-i18n="hero_btn1">Courses देखें</button>
+    <button class="secondary" onclick="requireLoginOr('test')" data-i18n="hero_btn2">Free Mock Test</button>
   </div>
 </section>
 
 <section class="section">
-  <div class="sectionHead"><h2>Explore</h2><button onclick="openModal('all')">View all →</button></div>
+  <div class="sectionHead"><h2 data-i18n="explore_h">Explore</h2><button onclick="openModal('all')" data-i18n="view_all">View all →</button></div>
   <div class="categories">
-    <button class="cat" onclick="selectCategory('CGTET')"><div class="catIcon">🎯</div><b>CGTET</b><small>Exam Prep</small></button>
+    <button class="cat" onclick="selectCategory('CGTET')"><div class="catIcon">🎯</div><b>CGTET</b><small data-i18n="cat_exam">Exam Prep</small></button>
     <button class="cat" onclick="selectCategory('CTET')"><div class="catIcon">📘</div><b>CTET</b><small>Paper I & II</small></button>
-    <button class="cat" onclick="selectCategory('Teacher Recruitment')"><div class="catIcon">👨‍🏫</div><b>Teacher Bharti</b><small>Updates</small></button>
-    <button class="cat" onclick="selectCategory('Test Series')"><div class="catIcon">📝</div><b>Test Series</b><small>Mock Tests</small></button>
-    <button class="cat" onclick="selectCategory('PDF')"><div class="catIcon">📄</div><b>PDF Notes</b><small>Study Material</small></button>
-    <button class="cat" onclick="selectCategory('Current Affairs')"><div class="catIcon">📰</div><b>Current Affairs</b><small>Daily</small></button>
-    <button class="cat" onclick="selectCategory('Videos')"><div class="catIcon">▶️</div><b>Video Classes</b><small>Learn</small></button>
-    <button class="cat" onclick="openModal('more')"><div class="catIcon">•••</div><b>More</b><small>Explore</small></button>
+    <button class="cat" onclick="selectCategory('Teacher Recruitment')"><div class="catIcon">👨‍🏫</div><b data-i18n="cat_bharti">Teacher Bharti</b><small data-i18n="cat_updates">Updates</small></button>
+    <button class="cat" onclick="selectCategory('Test Series')"><div class="catIcon">📝</div><b>Test Series</b><small data-i18n="cat_mock">Mock Tests</small></button>
+    <button class="cat" onclick="selectCategory('PDF')"><div class="catIcon">📄</div><b data-i18n="cat_pdf">PDF Notes</b><small data-i18n="cat_study">Study Material</small></button>
+    <button class="cat" onclick="selectCategory('Current Affairs')"><div class="catIcon">📰</div><b data-i18n="cat_ca">Current Affairs</b><small data-i18n="cat_daily">Daily</small></button>
+    <button class="cat" onclick="selectCategory('Videos')"><div class="catIcon">▶️</div><b data-i18n="cat_video">Video Classes</b><small data-i18n="cat_learn">Learn</small></button>
+    <button class="cat" onclick="openModal('more')"><div class="catIcon">•••</div><b data-i18n="cat_more">More</b><small data-i18n="cat_explore">Explore</small></button>
   </div>
 </section>
 
 <section class="section">
-  <div class="sectionHead"><h2>Special Offers</h2><button onclick="openModal('offer')">View details →</button></div>
+  <div class="sectionHead"><h2 data-i18n="offers_h">Special Offers</h2><button onclick="openModal('offer')" data-i18n="view_details">View details →</button></div>
   <div class="bannerWrap">
-    <div class="banner b1 active"><div><h3>CGTET Mega Test Series</h3><p>100 Mock Tests • Detailed Solutions • Performance Analysis</p><button class="primary" onclick="openModal('test')">Start Free Test</button></div><div class="deal">FREE<br>DEMO</div></div>
-    <div class="banner b2"><div><h3>Teacher Recruitment 2026</h3><p>Notes + Practice Sets + Previous Year Questions</p><button class="primary" onclick="selectCategory('Teacher Recruitment')">Explore</button></div><div class="deal">NEW<br>COURSE</div></div>
-    <div class="banner b3"><div><h3>Daily Current Affairs</h3><p>Exam-focused daily questions and quick revision.</p><button class="primary" onclick="selectCategory('Current Affairs')">Read Now</button></div><div class="deal">DAILY<br>UPDATE</div></div>
+    <div class="banner b1 active"><div><h3 data-i18n="ban1_t">CGTET Mega Test Series</h3><p data-i18n="ban1_p">100 Mock Tests • Detailed Solutions • Performance Analysis</p><button class="primary" onclick="requireLoginOr('test')" data-i18n="ban1_b">Start Free Test</button></div><div class="deal" data-i18n-html="deal_free">FREE<br>DEMO</div></div>
+    <div class="banner b2"><div><h3 data-i18n="ban2_t">Teacher Recruitment 2026</h3><p data-i18n="ban2_p">Notes + Practice Sets + Previous Year Questions</p><button class="primary" onclick="selectCategory('Teacher Recruitment')" data-i18n="ban2_b">Explore</button></div><div class="deal" data-i18n-html="deal_new">NEW<br>COURSE</div></div>
+    <div class="banner b3"><div><h3 data-i18n="ban3_t">Daily Current Affairs</h3><p data-i18n="ban3_p">Exam-focused daily questions and quick revision.</p><button class="primary" onclick="selectCategory('Current Affairs')" data-i18n="ban3_b">Read Now</button></div><div class="deal" data-i18n-html="deal_daily">DAILY<br>UPDATE</div></div>
   </div>
   <div class="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
 </section>
 
 <section class="section" id="courses">
-  <div class="sectionHead"><h2>Popular Courses</h2><button onclick="openModal('all')">See all →</button></div>
+  <div class="sectionHead"><h2 data-i18n="popular_h">Popular Courses</h2><button onclick="openModal('all')" data-i18n="see_all">See all →</button></div>
   <div class="courseGrid" id="courseGrid">
     <article class="course" data-tags="CGTET Test Series">
       <div class="courseCover"><span class="tag">BESTSELLER</span><strong>CGTET 2026 Complete Batch</strong></div>
-      <div class="courseBody"><h3>CGTET Complete Preparation</h3><div class="meta"><span>🎥 120 Classes</span><span>📝 50 Tests</span></div><span class="price">₹499</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+      <div class="courseBody"><h3 data-i18n="c1_t">CGTET Complete Preparation</h3><div class="meta"><span>🎥 120 Classes</span><span>📝 50 Tests</span></div><span class="price">₹499</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
     </article>
     <article class="course" data-tags="CTET Course">
       <div class="courseCover"><span class="tag">NEW</span><strong>CTET Paper I & II</strong></div>
-      <div class="courseBody"><h3>CTET Full Course</h3><div class="meta"><span>🎥 100 Classes</span><span>📄 Notes</span></div><span class="price">₹699</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+      <div class="courseBody"><h3 data-i18n="c2_t">CTET Full Course</h3><div class="meta"><span>🎥 100 Classes</span><span>📄 Notes</span></div><span class="price">₹699</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
     </article>
     <article class="course" data-tags="Teacher Recruitment CG">
       <div class="courseCover"><span class="tag">POPULAR</span><strong>CG Teacher Bharti</strong></div>
-      <div class="courseBody"><h3>Teacher Recruitment Master Pack</h3><div class="meta"><span>📝 100 Tests</span><span>📄 PDFs</span></div><span class="price">₹999</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+      <div class="courseBody"><h3 data-i18n="c3_t">Teacher Recruitment Master Pack</h3><div class="meta"><span>📝 100 Tests</span><span>📄 PDFs</span></div><span class="price">₹999</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
     </article>
     <article class="course" data-tags="Test Series">
       <div class="courseCover"><strong>100 Mock Tests</strong></div>
-      <div class="courseBody"><h3>TET Mega Test Series</h3><div class="meta"><span>📝 100 Tests</span><span>🏆 Ranking</span></div><span class="price">₹199</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+      <div class="courseBody"><h3 data-i18n="c4_t">TET Mega Test Series</h3><div class="meta"><span>📝 100 Tests</span><span>🏆 Ranking</span></div><span class="price">₹199</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
     </article>
     <article class="course" data-tags="PDF Notes">
       <div class="courseCover"><strong>CDP Complete Notes</strong></div>
-      <div class="courseBody"><h3>बाल विकास एवं शिक्षाशास्त्र</h3><div class="meta"><span>📄 300+ Pages</span><span>❓ MCQs</span></div><span class="price">₹149</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+      <div class="courseBody"><h3>बाल विकास एवं शिक्षाशास्त्र</h3><div class="meta"><span>📄 300+ Pages</span><span>❓ MCQs</span></div><span class="price">₹149</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
     </article>
     <article class="course" data-tags="Current Affairs">
       <div class="courseCover"><strong>Current Affairs</strong></div>
-      <div class="courseBody"><h3>Daily Current Affairs Pack</h3><div class="meta"><span>📰 Daily</span><span>📝 MCQs</span></div><span class="price">₹99</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+      <div class="courseBody"><h3 data-i18n="c6_t">Daily Current Affairs Pack</h3><div class="meta"><span>📰 Daily</span><span>📝 MCQs</span></div><span class="price">₹99</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
     </article>
   </div>
 </section>
 
 <section class="section">
-  <div class="sectionHead"><h2>Your Progress</h2></div>
+  <div class="sectionHead"><h2 data-i18n="progress_h">Your Progress</h2></div>
   <div class="quick">
-    <div class="quickCard"><strong>12</strong><span>Tests Attempted</span></div>
-    <div class="quickCard"><strong>78%</strong><span>Average Score</span></div>
-    <div class="quickCard"><strong>#124</strong><span>Overall Rank</span></div>
-    <div class="quickCard"><strong>6</strong><span>Courses Active</span></div>
+    <div class="quickCard"><strong id="statTests">0</strong><span data-i18n="stat_tests">Tests Attempted</span></div>
+    <div class="quickCard"><strong id="statScore">—</strong><span data-i18n="stat_score">Average Score</span></div>
+    <div class="quickCard"><strong id="statRank">—</strong><span data-i18n="stat_rank">Overall Rank</span></div>
+    <div class="quickCard"><strong id="statCourses">0</strong><span data-i18n="stat_courses">Courses Active</span></div>
   </div>
 </section>
 
 <nav class="bottomNav">
-  <button class="navItem active" onclick="scrollToId('top')"><span>⌂</span>Home</button>
-  <button class="navItem" onclick="scrollToId('courses')"><span>▣</span>Courses</button>
-  <button class="navItem" onclick="openModal('test')"><span>✎</span>Tests</button>
-  <button class="navItem" onclick="openModal('downloads')"><span>⇩</span>Downloads</button>
-  <button class="navItem" onclick="openModal('profile')"><span>●</span>Profile</button>
+  <button class="navItem active" onclick="scrollToId('top')"><span>⌂</span><span data-i18n="nav_home">Home</span></button>
+  <button class="navItem" onclick="scrollToId('courses')"><span>▣</span><span data-i18n="nav_courses">Courses</span></button>
+  <button class="navItem" onclick="requireLoginOr('test')"><span>✎</span><span data-i18n="nav_tests">Tests</span></button>
+  <button class="navItem" onclick="requireLoginOr('downloads')"><span>⇩</span><span data-i18n="nav_dl">Downloads</span></button>
+  <button class="navItem" onclick="requireLoginOr('profile')"><span>●</span><span data-i18n="nav_profile">Profile</span></button>
 </nav>
 </div>
 
@@ -207,38 +227,7 @@ button{cursor:pointer;border:0}
   <div class="modal" id="modal"></div>
 </div>
 
-<script>
-const modalBack=document.getElementById('modalBack'), modal=document.getElementById('modal');
-function openModal(type){
- let content={
-  notify:`<button class="close" onclick="closeModal()">×</button><h3>Notifications</h3><div class="notice">📢 CG Teacher Recruitment 2026 की नई अपडेट उपलब्ध है।</div><div class="notice">📝 आपका नया mock test तैयार है।</div><div class="notice">🎓 Course में नई class जोड़ दी गई है।</div>`,
-  profile:`<button class="close" onclick="closeModal()">×</button><h3>My Profile</h3><div class="profileRow"><div class="avatar">VK</div><div><b>Vijay Kumar</b><br><small>Exam Key Club Learner</small></div></div><div class="profileRow">📚 My Courses <span style="margin-left:auto">6</span></div><div class="profileRow">📝 My Tests <span style="margin-left:auto">12</span></div>`,
-  test:`<button class="close" onclick="closeModal()">×</button><h3>Free Mock Test</h3><p>10 questions • 10 minutes • Instant Result</p><button class="buy" style="float:none;width:100%;padding:13px" onclick="alert('Demo test शुरू!');closeModal()">Start Test</button>`,
-  buy:`<button class="close" onclick="closeModal()">×</button><h3>Course Purchase</h3><p>यह अभी demo checkout है। Production version में Razorpay/UPI payment और automatic course access जोड़ा जा सकता है।</p><button class="buy" style="float:none;width:100%;padding:13px" onclick="alert('Payment gateway यहाँ connect होगा');closeModal()">Continue to Payment</button>`,
-  downloads:`<button class="close" onclick="closeModal()"><span>×</span></button><h3>Downloads</h3><div class="notice">📄 CDP Complete Notes.pdf</div><div class="notice">📄 CGTET Practice Set 01.pdf</div>`,
-  all:`<button class="close" onclick="closeModal()">×</button><h3>All Categories</h3><p>CGTET • CTET • Teacher Recruitment • Test Series • PDF Notes • Current Affairs • Video Classes</p>`,
-  more:`<button class="close" onclick="closeModal()">×</button><h3>More</h3><div class="profileRow">🏆 Leaderboard</div><div class="profileRow">🎁 Refer & Earn</div><div class="profileRow">💬 Support</div>`,
-  offer:`<button class="close" onclick="closeModal()">×</button><h3>Special Offers</h3><p>Demo offers हैं। Admin panel से banner, price, image और CTA बदले जा सकेंगे।</p>`,
-  qr:`<button class="close" onclick="closeModal()">×</button><h3>Scan / Quick Access</h3><div style="height:180px;width:180px;margin:20px auto;background:repeating-conic-gradient(#111 0 25%,#fff 0 50%) 0/24px 24px;border:12px solid #fff;box-shadow:0 0 0 1px #ddd"></div>`
- }[type] || `<button class="close" onclick="closeModal()">×</button><h3>Exam Key Club</h3><p>Section ready.</p>`;
- modal.innerHTML=content; modalBack.classList.add('show');
-}
-function closeModal(){modalBack.classList.remove('show')}
-function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
-function filterCourses(){
- const q=document.getElementById('search').value.toLowerCase();
- document.querySelectorAll('.course').forEach(c=>c.style.display=(c.innerText+c.dataset.tags).toLowerCase().includes(q)?'block':'none');
-}
-function selectCategory(cat){
- document.getElementById('search').value=cat;
- filterCourses();
- scrollToId('courses');
-}
-let slide=0;
-setInterval(()=>{
- const bs=[...document.querySelectorAll('.banner')], ds=[...document.querySelectorAll('.dot')];
- slide=(slide+1)%bs.length; bs.forEach((b,i)=>b.classList.toggle('active',i===slide)); ds.forEach((d,i)=>d.classList.toggle('on',i===slide));
-},4500);
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
 </body>
 </html>
