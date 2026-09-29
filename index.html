@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#123f98">
+<meta name="description" content="Exam Key Club - Teacher Recruitment, TET Courses, Test Series and Study Material">
+<title>Exam Key Club</title>
+<style>
+:root{
+  --blue:#123f98; --blue2:#0b66c3; --bg:#f3f6ff; --card:#fff;
+  --text:#151a25; --muted:#6d7482; --border:#e7ebf5;
+  --shadow:0 8px 24px rgba(24,55,110,.08); --radius:22px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#fff;color:var(--text)}
+button,input{font:inherit}
+button{cursor:pointer;border:0}
+.app{max-width:1180px;margin:auto;min-height:100vh;background:#fff}
+.topbar{
+  height:72px;display:flex;align-items:center;gap:18px;padding:10px 22px;
+  position:sticky;top:0;z-index:30;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);
+  border-bottom:1px solid #eef1f7
+}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--blue);font-size:22px;white-space:nowrap}
+.logoMark{width:43px;height:43px;border-radius:13px;background:var(--blue);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:0 6px 15px rgba(18,63,152,.25)}
+.search{flex:1;max-width:540px;position:relative}
+.search input{width:100%;padding:13px 46px 13px 18px;border:1px solid var(--border);border-radius:15px;outline:none;background:#f7f9fd}
+.search input:focus{border-color:#91ace0;background:#fff}
+.search span{position:absolute;right:15px;top:10px;font-size:22px;color:#5f6c83}
+.top-actions{margin-left:auto;display:flex;gap:10px}
+.iconBtn{width:42px;height:42px;border-radius:13px;background:#f1f5ff;color:var(--blue);font-size:20px;position:relative}
+.badge{position:absolute;right:-3px;top:-4px;background:#e53935;color:#fff;border-radius:10px;font-size:10px;min-width:18px;height:18px;display:grid;place-items:center;font-weight:800}
+.avatar{width:42px;height:42px;border-radius:50%;background:#dfeaff;color:var(--blue);display:grid;place-items:center;font-weight:800}
+
+.hero{margin:20px 22px 12px;border-radius:25px;overflow:hidden;position:relative;min-height:230px;
+  background:linear-gradient(120deg,#0e438f,#1182d5);color:#fff;padding:30px}
+.hero:after{content:"";position:absolute;right:-90px;bottom:-110px;width:340px;height:340px;border-radius:50%;background:rgba(255,255,255,.10)}
+.hero h1{font-size:clamp(26px,4vw,42px);margin:0 0 8px;max-width:600px}
+.hero p{font-size:16px;line-height:1.55;max-width:590px;color:#e8f3ff;margin:0 0 20px}
+.heroBtns{display:flex;gap:10px;flex-wrap:wrap}
+.primary{background:#fff;color:var(--blue);padding:12px 18px;border-radius:13px;font-weight:800}
+.secondary{background:rgba(255,255,255,.14);color:#fff;padding:12px 18px;border-radius:13px;font-weight:700;border:1px solid rgba(255,255,255,.25)}
+
+.section{padding:16px 22px}
+.sectionHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.sectionHead h2{margin:0;font-size:21px}
+.sectionHead button{background:none;color:var(--blue);font-weight:800}
+
+.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.cat{background:var(--card);border:1px solid var(--border);border-radius:19px;padding:17px 12px;min-height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;box-shadow:var(--shadow);transition:.2s}
+.cat:hover{transform:translateY(-3px);border-color:#b9c9ec}
+.catIcon{width:52px;height:52px;border-radius:16px;background:#eef4ff;display:grid;place-items:center;font-size:27px}
+.cat b{font-size:14px;text-align:center}
+.cat small{color:var(--muted);font-size:11px}
+
+.bannerWrap{position:relative}
+.banner{display:none;border-radius:20px;min-height:165px;padding:24px;color:#fff;overflow:hidden;position:relative}
+.banner.active{display:flex;align-items:center}
+.banner h3{font-size:26px;margin:0 0 7px}
+.banner p{margin:0 0 14px;color:#eaf4ff}
+.b1{background:linear-gradient(120deg,#123f98,#0b83d2)}
+.b2{background:linear-gradient(120deg,#6b21a8,#c026d3)}
+.b3{background:linear-gradient(120deg,#047857,#10b981)}
+.banner .deal{position:absolute;right:35px;bottom:20px;background:#fff;color:var(--blue);font-weight:900;border-radius:50%;width:108px;height:108px;display:grid;place-items:center;text-align:center;font-size:14px;box-shadow:0 8px 25px rgba(0,0,0,.18)}
+.dots{display:flex;justify-content:center;gap:7px;margin:10px}
+.dot{width:8px;height:8px;border-radius:50%;background:#c5cee3}.dot.on{width:28px;border-radius:10px;background:var(--blue)}
+
+.courseGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.course{border:1px solid var(--border);border-radius:20px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+.courseCover{height:125px;background:linear-gradient(135deg,#173e8c,#4f83d8);display:flex;align-items:end;padding:15px;color:#fff;position:relative}
+.courseCover .tag{position:absolute;right:12px;top:12px;background:#fff;color:var(--blue);padding:6px 9px;border-radius:9px;font-size:11px;font-weight:900}
+.courseBody{padding:15px}
+.courseBody h3{margin:0 0 7px;font-size:16px}
+.meta{font-size:12px;color:var(--muted);display:flex;gap:12px;margin-bottom:13px}
+.price{font-size:19px;font-weight:900;color:var(--blue)}
+.buy{float:right;background:var(--blue);color:#fff;padding:9px 13px;border-radius:11px;font-weight:800;font-size:12px}
+
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.quickCard{padding:16px;border-radius:18px;background:#f5f8ff;border:1px solid #e5ebf8}
+.quickCard strong{display:block;font-size:25px;color:var(--blue);margin-bottom:3px}
+.quickCard span{font-size:12px;color:var(--muted)}
+
+.bottomNav{display:none}
+
+.modalBack{position:fixed;inset:0;background:rgba(10,22,45,.5);z-index:80;display:none;align-items:flex-end;justify-content:center}
+.modalBack.show{display:flex}
+.modal{width:min(560px,100%);background:#fff;border-radius:25px 25px 0 0;padding:22px;animation:up .2s ease}
+@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
+.modal h3{margin-top:0}
+.close{float:right;background:#eef2fa;width:34px;height:34px;border-radius:10px}
+.notice{padding:13px;border-radius:13px;background:#f5f8ff;margin:10px 0}
+.profileRow{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--border)}
+
+@media(max-width:800px){
+  .topbar{padding:9px 14px;height:64px}.logoText{display:none}.logoMark{width:40px;height:40px}
+  .search{max-width:none}.search input{padding:11px 40px 11px 13px}.top-actions .hideMob{display:none}
+  .hero{margin:14px 14px 8px;min-height:245px;padding:24px 20px}.hero h1{font-size:28px}
+  .hero .deal{display:none}
+  .section{padding:14px}
+  .categories{grid-template-columns:repeat(4,1fr);gap:9px}.cat{min-height:100px;padding:10px 5px;border-radius:16px}.catIcon{width:44px;height:44px;font-size:23px}.cat b{font-size:12px}
+  .banner{min-height:175px;padding:20px 18px}.banner h3{font-size:21px;max-width:65%}.banner p{font-size:12px;max-width:65%}.banner .deal{width:82px;height:82px;right:18px;font-size:11px}
+  .courseGrid{grid-template-columns:1fr 1fr}.courseCover{height:105px}.courseBody{padding:12px}.courseBody h3{font-size:14px}.buy{padding:8px 10px}
+  .quick{grid-template-columns:repeat(2,1fr)}
+  .bottomNav{position:sticky;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:7px 4px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -5px 20px rgba(30,50,90,.08)}
+  .navItem{background:none;color:#687386;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px}.navItem span{font-size:21px}.navItem.active{color:var(--blue);font-weight:800}
+}
+@media(max-width:430px){.categories{grid-template-columns:repeat(4,1fr)}.courseGrid{grid-template-columns:1fr}.search input{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="logo"><div class="logoMark">EK</div><span class="logoText">Exam Key Club</span></div>
+  <div class="search"><input id="search" placeholder="Search courses, tests, PDFs..." oninput="filterCourses()"><span>⌕</span></div>
+  <div class="top-actions">
+    <button class="iconBtn hideMob" onclick="openModal('qr')">▦</button>
+    <button class="iconBtn" onclick="openModal('notify')">🔔<i class="badge">5</i></button>
+    <button class="avatar" onclick="openModal('profile')">VK</button>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Teacher Recruitment की तैयारी, एक ही जगह.</h1>
+  <p>CGTET, CTET, शिक्षक भर्ती, Test Series, PDF Notes और structured courses के साथ अपनी तैयारी को व्यवस्थित करें।</p>
+  <div class="heroBtns">
+    <button class="primary" onclick="scrollToId('courses')">Courses देखें</button>
+    <button class="secondary" onclick="openModal('test')">Free Mock Test</button>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sectionHead"><h2>Explore</h2><button onclick="openModal('all')">View all →</button></div>
+  <div class="categories">
+    <button class="cat" onclick="selectCategory('CGTET')"><div class="catIcon">🎯</div><b>CGTET</b><small>Exam Prep</small></button>
+    <button class="cat" onclick="selectCategory('CTET')"><div class="catIcon">📘</div><b>CTET</b><small>Paper I & II</small></button>
+    <button class="cat" onclick="selectCategory('Teacher Recruitment')"><div class="catIcon">👨‍🏫</div><b>Teacher Bharti</b><small>Updates</small></button>
+    <button class="cat" onclick="selectCategory('Test Series')"><div class="catIcon">📝</div><b>Test Series</b><small>Mock Tests</small></button>
+    <button class="cat" onclick="selectCategory('PDF')"><div class="catIcon">📄</div><b>PDF Notes</b><small>Study Material</small></button>
+    <button class="cat" onclick="selectCategory('Current Affairs')"><div class="catIcon">📰</div><b>Current Affairs</b><small>Daily</small></button>
+    <button class="cat" onclick="selectCategory('Videos')"><div class="catIcon">▶️</div><b>Video Classes</b><small>Learn</small></button>
+    <button class="cat" onclick="openModal('more')"><div class="catIcon">•••</div><b>More</b><small>Explore</small></button>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sectionHead"><h2>Special Offers</h2><button onclick="openModal('offer')">View details →</button></div>
+  <div class="bannerWrap">
+    <div class="banner b1 active"><div><h3>CGTET Mega Test Series</h3><p>100 Mock Tests • Detailed Solutions • Performance Analysis</p><button class="primary" onclick="openModal('test')">Start Free Test</button></div><div class="deal">FREE<br>DEMO</div></div>
+    <div class="banner b2"><div><h3>Teacher Recruitment 2026</h3><p>Notes + Practice Sets + Previous Year Questions</p><button class="primary" onclick="selectCategory('Teacher Recruitment')">Explore</button></div><div class="deal">NEW<br>COURSE</div></div>
+    <div class="banner b3"><div><h3>Daily Current Affairs</h3><p>Exam-focused daily questions and quick revision.</p><button class="primary" onclick="selectCategory('Current Affairs')">Read Now</button></div><div class="deal">DAILY<br>UPDATE</div></div>
+  </div>
+  <div class="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+</section>
+
+<section class="section" id="courses">
+  <div class="sectionHead"><h2>Popular Courses</h2><button onclick="openModal('all')">See all →</button></div>
+  <div class="courseGrid" id="courseGrid">
+    <article class="course" data-tags="CGTET Test Series">
+      <div class="courseCover"><span class="tag">BESTSELLER</span><strong>CGTET 2026 Complete Batch</strong></div>
+      <div class="courseBody"><h3>CGTET Complete Preparation</h3><div class="meta"><span>🎥 120 Classes</span><span>📝 50 Tests</span></div><span class="price">₹499</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+    </article>
+    <article class="course" data-tags="CTET Course">
+      <div class="courseCover"><span class="tag">NEW</span><strong>CTET Paper I & II</strong></div>
+      <div class="courseBody"><h3>CTET Full Course</h3><div class="meta"><span>🎥 100 Classes</span><span>📄 Notes</span></div><span class="price">₹699</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+    </article>
+    <article class="course" data-tags="Teacher Recruitment CG">
+      <div class="courseCover"><span class="tag">POPULAR</span><strong>CG Teacher Bharti</strong></div>
+      <div class="courseBody"><h3>Teacher Recruitment Master Pack</h3><div class="meta"><span>📝 100 Tests</span><span>📄 PDFs</span></div><span class="price">₹999</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+    </article>
+    <article class="course" data-tags="Test Series">
+      <div class="courseCover"><strong>100 Mock Tests</strong></div>
+      <div class="courseBody"><h3>TET Mega Test Series</h3><div class="meta"><span>📝 100 Tests</span><span>🏆 Ranking</span></div><span class="price">₹199</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+    </article>
+    <article class="course" data-tags="PDF Notes">
+      <div class="courseCover"><strong>CDP Complete Notes</strong></div>
+      <div class="courseBody"><h3>बाल विकास एवं शिक्षाशास्त्र</h3><div class="meta"><span>📄 300+ Pages</span><span>❓ MCQs</span></div><span class="price">₹149</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+    </article>
+    <article class="course" data-tags="Current Affairs">
+      <div class="courseCover"><strong>Current Affairs</strong></div>
+      <div class="courseBody"><h3>Daily Current Affairs Pack</h3><div class="meta"><span>📰 Daily</span><span>📝 MCQs</span></div><span class="price">₹99</span><button class="buy" onclick="openModal('buy')">Buy Now</button></div>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="sectionHead"><h2>Your Progress</h2></div>
+  <div class="quick">
+    <div class="quickCard"><strong>12</strong><span>Tests Attempted</span></div>
+    <div class="quickCard"><strong>78%</strong><span>Average Score</span></div>
+    <div class="quickCard"><strong>#124</strong><span>Overall Rank</span></div>
+    <div class="quickCard"><strong>6</strong><span>Courses Active</span></div>
+  </div>
+</section>
+
+<nav class="bottomNav">
+  <button class="navItem active" onclick="scrollToId('top')"><span>⌂</span>Home</button>
+  <button class="navItem" onclick="scrollToId('courses')"><span>▣</span>Courses</button>
+  <button class="navItem" onclick="openModal('test')"><span>✎</span>Tests</button>
+  <button class="navItem" onclick="openModal('downloads')"><span>⇩</span>Downloads</button>
+  <button class="navItem" onclick="openModal('profile')"><span>●</span>Profile</button>
+</nav>
+</div>
+
+<div class="modalBack" id="modalBack" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const modalBack=document.getElementById('modalBack'), modal=document.getElementById('modal');
+function openModal(type){
+ let content={
+  notify:`<button class="close" onclick="closeModal()">×</button><h3>Notifications</h3><div class="notice">📢 CG Teacher Recruitment 2026 की नई अपडेट उपलब्ध है।</div><div class="notice">📝 आपका नया mock test तैयार है।</div><div class="notice">🎓 Course में नई class जोड़ दी गई है।</div>`,
+  profile:`<button class="close" onclick="closeModal()">×</button><h3>My Profile</h3><div class="profileRow"><div class="avatar">VK</div><div><b>Vijay Kumar</b><br><small>Exam Key Club Learner</small></div></div><div class="profileRow">📚 My Courses <span style="margin-left:auto">6</span></div><div class="profileRow">📝 My Tests <span style="margin-left:auto">12</span></div>`,
+  test:`<button class="close" onclick="closeModal()">×</button><h3>Free Mock Test</h3><p>10 questions • 10 minutes • Instant Result</p><button class="buy" style="float:none;width:100%;padding:13px" onclick="alert('Demo test शुरू!');closeModal()">Start Test</button>`,
+  buy:`<button class="close" onclick="closeModal()">×</button><h3>Course Purchase</h3><p>यह अभी demo checkout है। Production version में Razorpay/UPI payment और automatic course access जोड़ा जा सकता है।</p><button class="buy" style="float:none;width:100%;padding:13px" onclick="alert('Payment gateway यहाँ connect होगा');closeModal()">Continue to Payment</button>`,
+  downloads:`<button class="close" onclick="closeModal()"><span>×</span></button><h3>Downloads</h3><div class="notice">📄 CDP Complete Notes.pdf</div><div class="notice">📄 CGTET Practice Set 01.pdf</div>`,
+  all:`<button class="close" onclick="closeModal()">×</button><h3>All Categories</h3><p>CGTET • CTET • Teacher Recruitment • Test Series • PDF Notes • Current Affairs • Video Classes</p>`,
+  more:`<button class="close" onclick="closeModal()">×</button><h3>More</h3><div class="profileRow">🏆 Leaderboard</div><div class="profileRow">🎁 Refer & Earn</div><div class="profileRow">💬 Support</div>`,
+  offer:`<button class="close" onclick="closeModal()">×</button><h3>Special Offers</h3><p>Demo offers हैं। Admin panel से banner, price, image और CTA बदले जा सकेंगे।</p>`,
+  qr:`<button class="close" onclick="closeModal()">×</button><h3>Scan / Quick Access</h3><div style="height:180px;width:180px;margin:20px auto;background:repeating-conic-gradient(#111 0 25%,#fff 0 50%) 0/24px 24px;border:12px solid #fff;box-shadow:0 0 0 1px #ddd"></div>`
+ }[type] || `<button class="close" onclick="closeModal()">×</button><h3>Exam Key Club</h3><p>Section ready.</p>`;
+ modal.innerHTML=content; modalBack.classList.add('show');
+}
+function closeModal(){modalBack.classList.remove('show')}
+function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+function filterCourses(){
+ const q=document.getElementById('search').value.toLowerCase();
+ document.querySelectorAll('.course').forEach(c=>c.style.display=(c.innerText+c.dataset.tags).toLowerCase().includes(q)?'block':'none');
+}
+function selectCategory(cat){
+ document.getElementById('search').value=cat;
+ filterCourses();
+ scrollToId('courses');
+}
+let slide=0;
+setInterval(()=>{
+ const bs=[...document.querySelectorAll('.banner')], ds=[...document.querySelectorAll('.dot')];
+ slide=(slide+1)%bs.length; bs.forEach((b,i)=>b.classList.toggle('active',i===slide)); ds.forEach((d,i)=>d.classList.toggle('on',i===slide));
+},4500);
+</script>
+</body>
+</html>
