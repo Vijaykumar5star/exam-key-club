@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123f98">
+<title>Exam Key Club — Admin</title>
+<style>
+:root{--blue:#123f98;--blue2:#0b66c3;--text:#151a25;--muted:#6d7482;--border:#e7ebf5;--ok:#157347;--bad:#b42318;--warn:#9a6700}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f3f6ff;color:var(--text)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0}
+.topbar{height:64px;background:var(--blue);color:#fff;display:flex;align-items:center;gap:12px;padding:0 20px;position:sticky;top:0;z-index:30}
+.topbar b{font-size:18px}
+.topbar .sp{margin-left:auto}
+.langBtn{background:rgba(255,255,255,.16);color:#fff;padding:8px 12px;border-radius:10px;font-weight:800}
+.outBtn{background:rgba(255,255,255,.16);color:#fff;padding:8px 14px;border-radius:10px;font-weight:800}
+.tabs{display:flex;gap:8px;padding:14px 20px 0;max-width:1100px;margin:auto;flex-wrap:wrap}
+.tab{padding:10px 18px;border-radius:12px;background:#fff;color:#54637c;font-weight:800;font-size:13px;border:1px solid var(--border)}
+.tab.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.wrap{max-width:1100px;margin:auto;padding:18px 20px 80px}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;margin:12px 0;box-shadow:0 8px 24px rgba(24,55,110,.06)}
+.card h3{margin:0 0 12px;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
+.stat{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;text-align:center}
+.stat strong{display:block;font-size:28px;color:var(--blue)}
+.stat span{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+td input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:9px;background:#f7f9fd}
+.pill{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800}
+.pill.ok{background:#e6f6ee;color:var(--ok)}
+.pill.bad{background:#fdecec;color:var(--bad)}
+.pill.warn{background:#fff4d6;color:var(--warn)}
+.pill.blue{background:#e8f0ff;color:var(--blue)}
+.act{padding:8px 12px;border-radius:9px;font-weight:800;font-size:12px}
+.act.blue{background:#eef4ff;color:var(--blue)}
+.act.ok{background:#e6f6ee;color:var(--ok)}
+.act.bad{background:#fdecec;color:var(--bad)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:700px){.f2{grid-template-columns:1fr}}
+.field{margin:8px 0}
+.field label{display:block;font-size:12px;font-weight:800;color:#3c4657;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:11px;background:#f7f9fd}
+.wideBtn{padding:12px 18px;border-radius:12px;background:var(--blue);color:#fff;font-weight:800}
+.msg{padding:12px 14px;border-radius:12px;margin:10px 0;display:none}
+.msg.err{display:block;background:#fdecec;color:var(--bad)}
+.msg.ok{display:block;background:#e8f8ef;color:var(--ok)}
+.loginWrap{min-height:100vh;display:grid;place-items:center;padding:20px}
+.loginCard{width:min(430px,100%);background:#fff;border-radius:22px;padding:28px;box-shadow:0 12px 40px rgba(24,55,110,.12)}
+.loginCard h1{font-size:22px;color:var(--blue);margin:0 0 4px}
+.loginCard p{color:var(--muted);font-size:14px;margin:0 0 14px}
+#app{display:none}
+</style>
+</head>
+<body>
+
+<div class="loginWrap" id="loginWrap">
+  <div class="loginCard">
+    <h1>Exam Key Club — Admin</h1>
+    <p id="loginStatus">Admin login karein (same email/password jo site par use karte hain)</p>
+    <div class="field"><label>Email</label><input id="adEmail" type="email" placeholder="you@example.com"></div>
+    <div class="field"><label>Password</label><input id="adPass" type="password" placeholder="••••••••"></div>
+    <button class="wideBtn" style="width:100%" onclick="adminLogin()">Login</button>
+    <div class="msg" id="adMsg"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <b>⚙️ Exam Key Club Admin</b>
+    <span class="sp"></span>
+    <button class="outBtn" onclick="supa.auth.signOut()">Logout</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="wrap" id="content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="admin.js"></script>
+</body>
+</html>
