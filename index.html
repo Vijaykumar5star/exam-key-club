@@ -86,6 +86,44 @@ button{cursor:pointer;border:0}
 
 .bottomNav{display:none}
 
+/* ---------- Test Engine ---------- */
+.testRow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);border-radius:16px;margin:8px 0;cursor:pointer;transition:.15s}
+.testRow:hover{border-color:#b9c9ec;background:#f7faff}
+.testRow b{display:block;font-size:15px}
+.testRow small{color:var(--muted)}
+.testGo{background:#eef4ff;color:var(--blue);font-weight:800;padding:8px 14px;border-radius:10px;white-space:nowrap;font-size:12px}
+.playerBack{position:fixed;inset:0;background:#f6f9ff;z-index:100;display:none;flex-direction:column}
+.playerBack.show{display:flex}
+.pTop{height:62px;display:flex;align-items:center;gap:12px;padding:0 18px;background:var(--blue);color:#fff}
+.pTop b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pTimer{margin-left:auto;font-weight:900;font-size:17px;background:rgba(255,255,255,.16);padding:8px 14px;border-radius:10px;white-space:nowrap}
+.pTimer.low{background:#e53935}
+.pBody{flex:1;overflow:auto;padding:20px;max-width:840px;margin:0 auto;width:100%}
+.qNum{color:var(--muted);font-size:13px;font-weight:800;margin-bottom:8px}
+.qText{font-size:19px;font-weight:800;line-height:1.5;margin-bottom:16px}
+.opt{display:flex;gap:12px;align-items:center;padding:14px 16px;border:2px solid var(--border);border-radius:14px;margin:9px 0;cursor:pointer;font-weight:600;background:#fff}
+.opt .key{width:32px;height:32px;border-radius:9px;background:#eef2fa;display:grid;place-items:center;font-weight:900;color:#54637c;flex:none}
+.opt.sel{border-color:var(--blue);background:#eef4ff}
+.opt.sel .key{background:var(--blue);color:#fff}
+.pFoot{border-top:1px solid var(--border);padding:12px 18px;display:flex;gap:10px;background:#fff;align-items:center}
+.pFoot button{flex:1;padding:13px;border-radius:12px;font-weight:800}
+.palWrap{display:none;padding:14px 0;border-top:1px dashed var(--border)}
+.palWrap.show{display:block}
+.pal{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.palChip{padding:10px 0;text-align:center;border:1.5px solid var(--border);border-radius:10px;font-weight:800;cursor:pointer;background:#fff}
+.palChip.ans{background:#e8f0ff;border-color:#91ace0;color:var(--blue)}
+.palChip.cur{outline:2px solid var(--blue)}
+.rBig{font-size:44px;font-weight:900;color:var(--blue);text-align:center;margin:8px 0}
+.rGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.rCell{background:#fff;border:1px solid var(--border);border-radius:14px;padding:13px;text-align:center}
+.rCell strong{display:block;font-size:21px}
+.rCell span{font-size:11px;color:var(--muted)}
+.revQ{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;margin:10px 0}
+.revQ .okA{color:#157347;font-weight:800}
+.revQ .badA{color:#b42318;font-weight:800}
+.upiBox{background:#f5f8ff;border:1px dashed #b9c9ec;border-radius:16px;padding:16px;text-align:center;margin:12px 0}
+.upiBox img{display:block;margin:10px auto;border-radius:12px;background:#fff;padding:6px}
+
 .modalBack{position:fixed;inset:0;background:rgba(10,22,45,.5);z-index:80;display:none;align-items:flex-end;justify-content:center}
 .modalBack.show{display:flex}
 .modal{width:min(560px,100%);background:#fff;border-radius:25px 25px 0 0;padding:22px;animation:up .2s ease;max-height:86vh;overflow:auto}
@@ -146,7 +184,7 @@ button{cursor:pointer;border:0}
   <p data-i18n="hero_sub">CGTET, CTET, शिक्षक भर्ती, Test Series, PDF Notes और structured courses के साथ अपनी तैयारी को व्यवस्थित करें।</p>
   <div class="heroBtns">
     <button class="primary" onclick="requireLoginOr('courses')" data-i18n="hero_btn1">Courses देखें</button>
-    <button class="secondary" onclick="requireLoginOr('test')" data-i18n="hero_btn2">Free Mock Test</button>
+    <button class="secondary" onclick="openTestsModal()" data-i18n="hero_btn2">Free Mock Test</button>
   </div>
 </section>
 
@@ -167,7 +205,7 @@ button{cursor:pointer;border:0}
 <section class="section">
   <div class="sectionHead"><h2 data-i18n="offers_h">Special Offers</h2><button onclick="openModal('offer')" data-i18n="view_details">View details →</button></div>
   <div class="bannerWrap">
-    <div class="banner b1 active"><div><h3 data-i18n="ban1_t">CGTET Mega Test Series</h3><p data-i18n="ban1_p">100 Mock Tests • Detailed Solutions • Performance Analysis</p><button class="primary" onclick="requireLoginOr('test')" data-i18n="ban1_b">Start Free Test</button></div><div class="deal" data-i18n-html="deal_free">FREE<br>DEMO</div></div>
+    <div class="banner b1 active"><div><h3 data-i18n="ban1_t">CGTET Mega Test Series</h3><p data-i18n="ban1_p">100 Mock Tests • Detailed Solutions • Performance Analysis</p><button class="primary" onclick="openTestsModal()" data-i18n="ban1_b">Start Free Test</button></div><div class="deal" data-i18n-html="deal_free">FREE<br>DEMO</div></div>
     <div class="banner b2"><div><h3 data-i18n="ban2_t">Teacher Recruitment 2026</h3><p data-i18n="ban2_p">Notes + Practice Sets + Previous Year Questions</p><button class="primary" onclick="selectCategory('Teacher Recruitment')" data-i18n="ban2_b">Explore</button></div><div class="deal" data-i18n-html="deal_new">NEW<br>COURSE</div></div>
     <div class="banner b3"><div><h3 data-i18n="ban3_t">Daily Current Affairs</h3><p data-i18n="ban3_p">Exam-focused daily questions and quick revision.</p><button class="primary" onclick="selectCategory('Current Affairs')" data-i18n="ban3_b">Read Now</button></div><div class="deal" data-i18n-html="deal_daily">DAILY<br>UPDATE</div></div>
   </div>
@@ -179,27 +217,27 @@ button{cursor:pointer;border:0}
   <div class="courseGrid" id="courseGrid">
     <article class="course" data-tags="CGTET Test Series">
       <div class="courseCover"><span class="tag">BESTSELLER</span><strong>CGTET 2026 Complete Batch</strong></div>
-      <div class="courseBody"><h3 data-i18n="c1_t">CGTET Complete Preparation</h3><div class="meta"><span>🎥 120 Classes</span><span>📝 50 Tests</span></div><span class="price">₹499</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
+      <div class="courseBody"><h3 data-i18n="c1_t">CGTET Complete Preparation</h3><div class="meta"><span>🎥 120 Classes</span><span>📝 50 Tests</span></div><span class="price">₹499</span><button class="buy" onclick="openBuy(3,'CGTET Complete Preparation',499)" data-i18n="buy">Buy Now</button></div>
     </article>
     <article class="course" data-tags="CTET Course">
       <div class="courseCover"><span class="tag">NEW</span><strong>CTET Paper I & II</strong></div>
-      <div class="courseBody"><h3 data-i18n="c2_t">CTET Full Course</h3><div class="meta"><span>🎥 100 Classes</span><span>📄 Notes</span></div><span class="price">₹699</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
+      <div class="courseBody"><h3 data-i18n="c2_t">CTET Full Course</h3><div class="meta"><span>🎥 100 Classes</span><span>📄 Notes</span></div><span class="price">₹699</span><button class="buy" onclick="openBuy(4,'CTET Full Course',699)" data-i18n="buy">Buy Now</button></div>
     </article>
     <article class="course" data-tags="Teacher Recruitment CG">
       <div class="courseCover"><span class="tag">POPULAR</span><strong>CG Teacher Bharti</strong></div>
-      <div class="courseBody"><h3 data-i18n="c3_t">Teacher Recruitment Master Pack</h3><div class="meta"><span>📝 100 Tests</span><span>📄 PDFs</span></div><span class="price">₹999</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
+      <div class="courseBody"><h3 data-i18n="c3_t">Teacher Recruitment Master Pack</h3><div class="meta"><span>📝 100 Tests</span><span>📄 PDFs</span></div><span class="price">₹999</span><button class="buy" onclick="openBuy(5,'Teacher Recruitment Master Pack',999)" data-i18n="buy">Buy Now</button></div>
     </article>
     <article class="course" data-tags="Test Series">
       <div class="courseCover"><strong>100 Mock Tests</strong></div>
-      <div class="courseBody"><h3 data-i18n="c4_t">TET Mega Test Series</h3><div class="meta"><span>📝 100 Tests</span><span>🏆 Ranking</span></div><span class="price">₹199</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
+      <div class="courseBody"><h3 data-i18n="c4_t">TET Mega Test Series</h3><div class="meta"><span>📝 100 Tests</span><span>🏆 Ranking</span></div><span class="price">₹199</span><button class="buy" onclick="openBuy(6,'TET Mega Test Series',199)" data-i18n="buy">Buy Now</button></div>
     </article>
     <article class="course" data-tags="PDF Notes">
       <div class="courseCover"><strong>CDP Complete Notes</strong></div>
-      <div class="courseBody"><h3>बाल विकास एवं शिक्षाशास्त्र</h3><div class="meta"><span>📄 300+ Pages</span><span>❓ MCQs</span></div><span class="price">₹149</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
+      <div class="courseBody"><h3>बाल विकास एवं शिक्षाशास्त्र</h3><div class="meta"><span>📄 300+ Pages</span><span>❓ MCQs</span></div><span class="price">₹149</span><button class="buy" onclick="openBuy(7,'बाल विकास एवं शिक्षाशास्त्र (CDP Notes)',149)" data-i18n="buy">Buy Now</button></div>
     </article>
     <article class="course" data-tags="Current Affairs">
       <div class="courseCover"><strong>Current Affairs</strong></div>
-      <div class="courseBody"><h3 data-i18n="c6_t">Daily Current Affairs Pack</h3><div class="meta"><span>📰 Daily</span><span>📝 MCQs</span></div><span class="price">₹99</span><button class="buy" onclick="openBuy()" data-i18n="buy">Buy Now</button></div>
+      <div class="courseBody"><h3 data-i18n="c6_t">Daily Current Affairs Pack</h3><div class="meta"><span>📰 Daily</span><span>📝 MCQs</span></div><span class="price">₹99</span><button class="buy" onclick="openBuy(8,'Daily Current Affairs Pack',99)" data-i18n="buy">Buy Now</button></div>
     </article>
   </div>
 </section>
@@ -217,11 +255,13 @@ button{cursor:pointer;border:0}
 <nav class="bottomNav">
   <button class="navItem active" onclick="scrollToId('top')"><span>⌂</span><span data-i18n="nav_home">Home</span></button>
   <button class="navItem" onclick="scrollToId('courses')"><span>▣</span><span data-i18n="nav_courses">Courses</span></button>
-  <button class="navItem" onclick="requireLoginOr('test')"><span>✎</span><span data-i18n="nav_tests">Tests</span></button>
+  <button class="navItem" onclick="openTestsModal()"><span>✎</span><span data-i18n="nav_tests">Tests</span></button>
   <button class="navItem" onclick="requireLoginOr('downloads')"><span>⇩</span><span data-i18n="nav_dl">Downloads</span></button>
   <button class="navItem" onclick="requireLoginOr('profile')"><span>●</span><span data-i18n="nav_profile">Profile</span></button>
 </nav>
 </div>
+
+<div class="playerBack" id="playerBack"></div>
 
 <div class="modalBack" id="modalBack" onclick="if(event.target===this)closeModal()">
   <div class="modal" id="modal"></div>
