@@ -184,10 +184,15 @@ async function sendOtp(){
   const email = document.getElementById('loginEmail').value.trim();
   if (!email || email.indexOf('@') < 0){ showMsg('loginMsg', t('err_generic'), 'err'); return; }
   setBusy('otpSendBtn', true);
-  const { error } = await supa.auth.signInWithOtp({
+  let { error } = await supa.auth.signInWithOtp({
     email,
     options: { shouldCreateUser: true, emailRedirectTo: SITE_URL }
   });
+  if (error && (error.status === 422 || (error.message || '').toLowerCase().includes('redirect'))){
+    // retry without redirect (allowlist not configured yet)
+    const r2 = await supa.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
+    error = r2.error;
+  }
   setBusy('otpSendBtn', false);
   if (error){ showMsg('loginMsg', error.message, 'err'); return; }
   document.getElementById('otpStep').style.display = 'block';
